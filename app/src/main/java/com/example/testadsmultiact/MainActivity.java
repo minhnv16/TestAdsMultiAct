@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,11 +22,14 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ActAdsEventHandler {
 
     static final String TAG = MainActivity.class.getSimpleName();
-    MainActivity mainActivity;
+    static boolean bShowingAds = true;
+    static HashMap<String, ActAdsEventHandler> hashMap = new HashMap<>();
+
     // Used to load the 'testadsmultiact' library on application startup.
     static {
         System.loadLibrary("testadsmultiact");
@@ -36,12 +40,8 @@ public class MainActivity extends AppCompatActivity {
     AdView mAdmodBanner;
     public FrameLayout fr_layout_googleads;
 
-    public View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Log.d(TAG, "onClickListener.onClick");
-        }
-    };
+
+
     void GotoConnect(){
         Intent myIntent = new Intent(MainActivity.this, MainActivity2.class);
         myIntent.putExtra("key1", 123); //Optional parameters
@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener onBtnGotoConnectClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            Log.d(TAG, "onClickListener.onClick");
             GotoConnect();
         }
     };
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainActivity = this;
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -70,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
         binding.button.setOnClickListener(onBtnGotoConnectClickListener);
         fr_layout_googleads = (FrameLayout ) findViewById(R.id.frameLayout_googleads);
 
+        Context context = getApplicationContext();
+        Log.d(TAG, "context="+String.valueOf(context));
+        setAdsByConnectionStatus(bShowingAds);
     }
 
     OnInitializationCompleteListener onInitializationCompleteListener = new OnInitializationCompleteListener() {
@@ -79,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
-    void InitAds(){
+    public void InitAds(){
 
         MobileAds.initialize(this, onInitializationCompleteListener);
         mAdmodBanner = new AdView(this);
@@ -117,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
         ;    }
 
-    void stopAds(){
+    public void stopAds(){
         if(mAdmodBanner!=null) {
             mAdmodBanner.destroy();
         }
@@ -125,6 +129,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        //setAdsByConnectionStatus(MainActivity.bShowingAds);
+
+        hashMap.put(this.getClass().getSimpleName(), this);
+        super.onResume();
+    }
 
     /**
      * A native method that is implemented by the 'testadsmultiact' native library,
