@@ -3,6 +3,7 @@ package com.example.testadsmultiact;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +30,18 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "onClickListener.onClick");
         }
     };
+    void GotoConnect(){
+        Intent myIntent = new Intent(MainActivity.this, MainActivity2.class);
+        myIntent.putExtra("key1", 123); //Optional parameters
+        MainActivity.this.startActivity(myIntent);
+    }
+    View.OnClickListener onBtnGotoConnectClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            GotoConnect();
+        }
+    };
+
 
 
     @Override
@@ -42,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         TextView tv = binding.sampleText;
         tv.setText(stringFromJNI());
 
-        binding.button.setOnClickListener(onClickListener);
+        binding.button.setOnClickListener(onBtnGotoConnectClickListener);
     }
 
     /**
