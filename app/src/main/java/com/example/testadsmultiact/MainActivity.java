@@ -27,7 +27,9 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity implements ActAdsEventHandler {
 
     static final String TAG = MainActivity.class.getSimpleName();
+    static boolean bAdsInitialized = false;
     static boolean bShowingAds = true;
+    static AdRequest adRequest = null;
     static HashMap<String, ActAdsEventHandler> hashMap = new HashMap<>();
 
     // Used to load the 'testadsmultiact' library on application startup.
@@ -36,8 +38,8 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
     }
 
     private ActivityMainBinding binding;
-
-    AdView mAdmodBanner;
+    Context context = null;
+    AdView mAdmodBanner=null;
     public FrameLayout fr_layout_googleads;
 
 
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
         binding.button.setOnClickListener(onBtnGotoConnectClickListener);
         fr_layout_googleads = (FrameLayout ) findViewById(R.id.frameLayout_googleads);
 
-        Context context = getApplicationContext();
+        context = getApplicationContext();
         Log.d(TAG, "context="+String.valueOf(context));
         setAdsByConnectionStatus(bShowingAds);
     }
@@ -85,9 +87,14 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
     };
     public void InitAds(){
 
-        MobileAds.initialize(this, onInitializationCompleteListener);
-        mAdmodBanner = new AdView(this);
-
+        if(!bAdsInitialized)
+        {
+            MobileAds.initialize(context, onInitializationCompleteListener);
+            bAdsInitialized = true;
+        }
+        if(mAdmodBanner==null) {
+            mAdmodBanner = new AdView(context);
+        }
         Log.d(TAG, "initAdsAdmob, "+"done new AdView");
         mAdmodBanner.setAdSize(AdSize.MEDIUM_RECTANGLE);
 
@@ -103,7 +110,9 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
 
         Log.d(TAG, "initAdsAdmob, "+"done setAdUnitId");
 
-        AdRequest adRequest = new AdRequest.Builder().build();
+        if(adRequest==null) {
+            adRequest = new AdRequest.Builder().build();
+        }
         Log.d(TAG, "initAdsAdmob, "+"done adRequest = new AdRequest.Builder()");
 
         mAdmodBanner.loadAd(adRequest);
@@ -119,11 +128,12 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
         fr_layout_googleads.addView(mAdmodBanner);
         fr_layout_googleads.setVisibility(View.VISIBLE);
 
-        ;    }
+    }
 
     public void stopAds(){
         if(mAdmodBanner!=null) {
             mAdmodBanner.destroy();
+            mAdmodBanner=null;
         }
         fr_layout_googleads.setVisibility(View.INVISIBLE);
 

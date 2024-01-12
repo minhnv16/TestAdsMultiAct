@@ -22,7 +22,7 @@ import com.google.android.gms.ads.initialization.OnInitializationCompleteListene
 
 public class MainActivity2 extends AppCompatActivity implements ActAdsEventHandler {
     static final String TAG = MainActivity.class.getSimpleName();
-    AdView mAdmodBanner;
+    AdView mAdmodBanner = null;
     public FrameLayout fr_layout_googleads;
 
 
@@ -59,10 +59,14 @@ public class MainActivity2 extends AppCompatActivity implements ActAdsEventHandl
         }
     };
     public void InitAds(){
-
-        MobileAds.initialize(this, onInitializationCompleteListener);
-        mAdmodBanner = new AdView(this);
-
+        if(!MainActivity.bAdsInitialized)
+        {
+            MobileAds.initialize(getApplicationContext(), onInitializationCompleteListener);
+            MainActivity.bAdsInitialized = true;
+        }
+        if(mAdmodBanner==null) {
+            mAdmodBanner = new AdView(getApplicationContext());
+        }
         Log.d(TAG, "initAdsAdmob, "+"done new AdView");
         mAdmodBanner.setAdSize(AdSize.MEDIUM_RECTANGLE);
 
@@ -78,10 +82,12 @@ public class MainActivity2 extends AppCompatActivity implements ActAdsEventHandl
 
         Log.d(TAG, "initAdsAdmob, "+"done setAdUnitId");
 
-        AdRequest adRequest = new AdRequest.Builder().build();
+        if(MainActivity.adRequest==null) {
+            MainActivity.adRequest = new AdRequest.Builder().build();
+        }
         Log.d(TAG, "initAdsAdmob, "+"done adRequest = new AdRequest.Builder()");
 
-        mAdmodBanner.loadAd(adRequest);
+        mAdmodBanner.loadAd(MainActivity.adRequest);
         Log.d(TAG, "initAdsAdmob, "+"done mAdmodBanner.loadAd");
 
         mAdmodBanner.setAdListener(new AdListener(){
@@ -94,11 +100,12 @@ public class MainActivity2 extends AppCompatActivity implements ActAdsEventHandl
         fr_layout_googleads.addView(mAdmodBanner);
         fr_layout_googleads.setVisibility(View.VISIBLE);
 
-        ;    }
+    }
 
     public void stopAds(){
         if(mAdmodBanner!=null) {
             mAdmodBanner.destroy();
+            mAdmodBanner = null;
         }
         fr_layout_googleads.setVisibility(View.INVISIBLE);
 
