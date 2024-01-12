@@ -1,5 +1,6 @@
 package com.example.testadsmultiact;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -7,9 +8,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.testadsmultiact.databinding.ActivityMainBinding;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 import java.util.ArrayList;
 
@@ -23,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ActivityMainBinding binding;
+
+    AdView mAdmodBanner;
+    public FrameLayout fr_layout_googleads;
 
     public View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
@@ -56,7 +68,63 @@ public class MainActivity extends AppCompatActivity {
         tv.setText(stringFromJNI());
 
         binding.button.setOnClickListener(onBtnGotoConnectClickListener);
+        fr_layout_googleads = (FrameLayout ) findViewById(R.id.frameLayout_googleads);
+
     }
+
+    OnInitializationCompleteListener onInitializationCompleteListener = new OnInitializationCompleteListener() {
+        @Override
+        public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
+            Log.d(TAG, "onInitializationComplete: begin ");
+
+        }
+    };
+    void InitAds(){
+
+        MobileAds.initialize(this, onInitializationCompleteListener);
+        mAdmodBanner = new AdView(this);
+
+        Log.d(TAG, "initAdsAdmob, "+"done new AdView");
+        mAdmodBanner.setAdSize(AdSize.MEDIUM_RECTANGLE);
+
+        //test ads
+        String admob_app_banner = "ca-app-pub-3940256099942544/6300978111";
+
+
+//        //real ads
+//        String admob_app_banner = "ca-app-pub-2979798531795011/4426477935";
+
+        Log.d(TAG, "initAdsAdmob, "+"admob_app_banner = "+ admob_app_banner);
+        mAdmodBanner.setAdUnitId(admob_app_banner);
+
+        Log.d(TAG, "initAdsAdmob, "+"done setAdUnitId");
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        Log.d(TAG, "initAdsAdmob, "+"done adRequest = new AdRequest.Builder()");
+
+        mAdmodBanner.loadAd(adRequest);
+        Log.d(TAG, "initAdsAdmob, "+"done mAdmodBanner.loadAd");
+
+        mAdmodBanner.setAdListener(new AdListener(){
+            @Override
+            public void onAdLoaded(){
+                Log.d(TAG,"initAdsAdmob, "+"ads loaded");
+            }
+        });
+
+        fr_layout_googleads.addView(mAdmodBanner);
+        fr_layout_googleads.setVisibility(View.VISIBLE);
+
+        ;    }
+
+    void stopAds(){
+        if(mAdmodBanner!=null) {
+            mAdmodBanner.destroy();
+        }
+        fr_layout_googleads.setVisibility(View.INVISIBLE);
+
+    }
+
 
     /**
      * A native method that is implemented by the 'testadsmultiact' native library,
