@@ -2,10 +2,13 @@ package com.example.testadsmultiact;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -76,6 +79,71 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
         context = getApplicationContext();
         Log.d(TAG, "context="+String.valueOf(context));
         setAdsByConnectionStatus(bShowingAds);
+
+        int nOrientation = getResources().getConfiguration().orientation;
+        InitLayout(nOrientation);
+
+    }
+
+    private void InitLayout(int nOrientation) {
+
+        ConstraintLayout constraintLayout = findViewById(R.id.mainAct);
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(constraintLayout);
+
+        float fbias = 0.2f;
+
+        if(nOrientation==Configuration.ORIENTATION_LANDSCAPE){
+            Log.d("On Config Change","LANDSCAPE");
+
+
+//            //OK for parent
+//            constraintSet.clear(R.id.button, ConstraintSet.BOTTOM);
+//            constraintSet.connect(R.id.button,ConstraintSet.LEFT,R.id.mainAct,ConstraintSet.LEFT,0);
+//            constraintSet.connect(R.id.button,ConstraintSet.RIGHT,R.id.mainAct,ConstraintSet.RIGHT,0);
+//            constraintSet.connect(R.id.button,ConstraintSet.TOP,R.id.mainAct,ConstraintSet.TOP,0);
+//            constraintSet.setVerticalBias(R.id.button, fbias);
+//            constraintSet.setHorizontalBias(R.id.button, fbias);
+
+
+
+            //margin to text view
+            constraintSet.clear(R.id.button, ConstraintSet.LEFT);
+            constraintSet.connect(R.id.button, ConstraintSet.LEFT, R.id.sample_text, ConstraintSet.RIGHT,0);
+            constraintSet.clear(R.id.button, ConstraintSet.TOP);
+            constraintSet.connect(R.id.button, ConstraintSet.TOP, R.id.mainAct, ConstraintSet.TOP,0);
+            constraintSet.connect(R.id.button, ConstraintSet.BOTTOM, R.id.mainAct, ConstraintSet.BOTTOM,0);
+            constraintSet.clear(R.id.button, ConstraintSet.RIGHT);
+            constraintSet.setHorizontalBias(R.id.button, 0.7f);
+
+
+        }
+        else{
+            Log.d("On Config Change","PORTRAIT");
+
+//            //OK for parent
+//            constraintSet.clear(R.id.button, ConstraintSet.TOP);
+//            constraintSet.connect(R.id.button,ConstraintSet.LEFT,R.id.mainAct,ConstraintSet.LEFT,0);
+//            constraintSet.connect(R.id.button,ConstraintSet.RIGHT,R.id.mainAct,ConstraintSet.RIGHT,0);
+//            constraintSet.connect(R.id.button,ConstraintSet.BOTTOM,R.id.mainAct,ConstraintSet.BOTTOM,0);
+//            constraintSet.setVerticalBias(R.id.button, fbias);
+//            constraintSet.setHorizontalBias(R.id.button, fbias);
+
+
+            //constraintSet.clear(R.id.button, ConstraintSet.BOTTOM);
+            constraintSet.clear(R.id.button, ConstraintSet.LEFT);
+            constraintSet.connect(R.id.button, ConstraintSet.LEFT, R.id.mainAct, ConstraintSet.LEFT,0);
+            constraintSet.clear(R.id.button, ConstraintSet.RIGHT);
+            constraintSet.connect(R.id.button, ConstraintSet.RIGHT, R.id.mainAct, ConstraintSet.RIGHT,0);
+            constraintSet.clear(R.id.button, ConstraintSet.TOP);
+            constraintSet.connect(R.id.button, ConstraintSet.TOP, R.id.sample_text, ConstraintSet.BOTTOM,0);
+            constraintSet.clear(R.id.button, ConstraintSet.BOTTOM);
+            constraintSet.setHorizontalBias(R.id.button, 0.5f);
+
+
+
+        }
+        constraintSet.applyTo(constraintLayout);
     }
 
     OnInitializationCompleteListener onInitializationCompleteListener = new OnInitializationCompleteListener() {
@@ -145,6 +213,12 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
 
         hashMap.put(this.getClass().getSimpleName(), this);
         super.onResume();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration configuration) {
+        super.onConfigurationChanged(configuration);
+        InitLayout(configuration.orientation);
     }
 
     /**
