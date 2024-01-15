@@ -85,65 +85,107 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
 
     }
 
-    private void InitLayout(int nOrientation) {
-
+    private void InitLayoutForAds(int nOrientation){
         ConstraintLayout constraintLayout = findViewById(R.id.mainAct);
         ConstraintSet constraintSet = new ConstraintSet();
         constraintSet.clone(constraintLayout);
 
         float fbias = 0.2f;
 
-        if(nOrientation==Configuration.ORIENTATION_LANDSCAPE){
+        if(nOrientation== Configuration.ORIENTATION_LANDSCAPE){
             Log.d("On Config Change","LANDSCAPE");
 
+            //for ads
+            constraintSet.clear(R.id.frameLayout_googleads, ConstraintSet.TOP);
+            constraintSet.connect(R.id.frameLayout_googleads,ConstraintSet.TOP,R.id.mainAct,ConstraintSet.TOP,0);
 
-//            //OK for parent
-//            constraintSet.clear(R.id.button, ConstraintSet.BOTTOM);
-//            constraintSet.connect(R.id.button,ConstraintSet.LEFT,R.id.mainAct,ConstraintSet.LEFT,0);
-//            constraintSet.connect(R.id.button,ConstraintSet.RIGHT,R.id.mainAct,ConstraintSet.RIGHT,0);
-//            constraintSet.connect(R.id.button,ConstraintSet.TOP,R.id.mainAct,ConstraintSet.TOP,0);
-//            constraintSet.setVerticalBias(R.id.button, fbias);
-//            constraintSet.setHorizontalBias(R.id.button, fbias);
+            constraintSet.clear(R.id.frameLayout_googleads, ConstraintSet.LEFT);
+            //constraintSet.connect(R.id.frameLayout_googleads,ConstraintSet.LEFT,R.id.mainAct,ConstraintSet.LEFT,0);
+
+            constraintSet.clear(R.id.frameLayout_googleads, ConstraintSet.BOTTOM);
+            constraintSet.connect(R.id.frameLayout_googleads,ConstraintSet.BOTTOM,R.id.mainAct,ConstraintSet.BOTTOM,0);
+
+            constraintSet.clear(R.id.frameLayout_googleads, ConstraintSet.RIGHT);
+            constraintSet.connect(R.id.frameLayout_googleads,ConstraintSet.RIGHT,R.id.mainAct,ConstraintSet.RIGHT,0);
+
+            constraintSet.setVerticalBias(R.id.frameLayout_googleads, 0.5f);
+            constraintSet.setHorizontalBias(R.id.frameLayout_googleads, 1.0f);
 
 
 
-            //margin to text view
-            constraintSet.clear(R.id.button, ConstraintSet.LEFT);
-            constraintSet.connect(R.id.button, ConstraintSet.LEFT, R.id.sample_text, ConstraintSet.RIGHT,0);
-            constraintSet.clear(R.id.button, ConstraintSet.TOP);
-            constraintSet.connect(R.id.button, ConstraintSet.TOP, R.id.mainAct, ConstraintSet.TOP,0);
-            constraintSet.connect(R.id.button, ConstraintSet.BOTTOM, R.id.mainAct, ConstraintSet.BOTTOM,0);
-            constraintSet.clear(R.id.button, ConstraintSet.RIGHT);
-            constraintSet.setHorizontalBias(R.id.button, 0.7f);
+            //for content
+            constraintSet.clear(R.id.contentAct, ConstraintSet.TOP);
+            constraintSet.connect(R.id.contentAct,ConstraintSet.TOP,R.id.mainAct,ConstraintSet.TOP,0);
+
+            constraintSet.clear(R.id.contentAct, ConstraintSet.LEFT);
+            constraintSet.connect(R.id.contentAct,ConstraintSet.LEFT,R.id.mainAct,ConstraintSet.LEFT,0);
+
+
+
+            constraintSet.clear(R.id.contentAct, ConstraintSet.BOTTOM);
+            constraintSet.connect(R.id.contentAct,ConstraintSet.BOTTOM,R.id.mainAct,ConstraintSet.BOTTOM,0);
+
+            constraintSet.clear(R.id.contentAct, ConstraintSet.RIGHT);
+            constraintSet.connect(R.id.contentAct,ConstraintSet.RIGHT,R.id.frameLayout_googleads,ConstraintSet.LEFT,0);
+
+            constraintSet.setVerticalBias(R.id.contentAct, 0.5f);
+            constraintSet.setHorizontalBias(R.id.contentAct, 0.0f);
 
 
         }
         else{
             Log.d("On Config Change","PORTRAIT");
 
-//            //OK for parent
-//            constraintSet.clear(R.id.button, ConstraintSet.TOP);
-//            constraintSet.connect(R.id.button,ConstraintSet.LEFT,R.id.mainAct,ConstraintSet.LEFT,0);
-//            constraintSet.connect(R.id.button,ConstraintSet.RIGHT,R.id.mainAct,ConstraintSet.RIGHT,0);
-//            constraintSet.connect(R.id.button,ConstraintSet.BOTTOM,R.id.mainAct,ConstraintSet.BOTTOM,0);
-//            constraintSet.setVerticalBias(R.id.button, fbias);
-//            constraintSet.setHorizontalBias(R.id.button, fbias);
+            //for ads
+            constraintSet.clear(R.id.frameLayout_googleads, ConstraintSet.TOP);
+            //constraintSet.connect(R.id.frameLayout_googleads,ConstraintSet.TOP,R.id.mainAct,ConstraintSet.TOP,0);
+
+            constraintSet.clear(R.id.frameLayout_googleads, ConstraintSet.LEFT);
+            constraintSet.connect(R.id.frameLayout_googleads,ConstraintSet.LEFT,R.id.mainAct,ConstraintSet.LEFT,0);
+
+            constraintSet.clear(R.id.frameLayout_googleads, ConstraintSet.BOTTOM);
+            constraintSet.connect(R.id.frameLayout_googleads,ConstraintSet.BOTTOM,R.id.mainAct,ConstraintSet.BOTTOM,0);
+
+            constraintSet.clear(R.id.frameLayout_googleads, ConstraintSet.RIGHT);
+            constraintSet.connect(R.id.frameLayout_googleads,ConstraintSet.RIGHT,R.id.mainAct,ConstraintSet.RIGHT,0);
+
+            constraintSet.setVerticalBias(R.id.frameLayout_googleads, 1.0f);
+            constraintSet.setHorizontalBias(R.id.frameLayout_googleads, 0.5f);
 
 
-            //constraintSet.clear(R.id.button, ConstraintSet.BOTTOM);
-            constraintSet.clear(R.id.button, ConstraintSet.LEFT);
-            constraintSet.connect(R.id.button, ConstraintSet.LEFT, R.id.mainAct, ConstraintSet.LEFT,0);
-            constraintSet.clear(R.id.button, ConstraintSet.RIGHT);
-            constraintSet.connect(R.id.button, ConstraintSet.RIGHT, R.id.mainAct, ConstraintSet.RIGHT,0);
-            constraintSet.clear(R.id.button, ConstraintSet.TOP);
-            constraintSet.connect(R.id.button, ConstraintSet.TOP, R.id.sample_text, ConstraintSet.BOTTOM,0);
-            constraintSet.clear(R.id.button, ConstraintSet.BOTTOM);
-            constraintSet.setHorizontalBias(R.id.button, 0.5f);
+
+
+
+            //for content
+            constraintSet.clear(R.id.contentAct, ConstraintSet.TOP);
+            constraintSet.connect(R.id.contentAct,ConstraintSet.TOP,R.id.mainAct,ConstraintSet.TOP,0);
+
+            constraintSet.clear(R.id.contentAct, ConstraintSet.LEFT);
+            constraintSet.connect(R.id.contentAct,ConstraintSet.LEFT,R.id.mainAct,ConstraintSet.LEFT,0);
+
+
+
+            constraintSet.clear(R.id.contentAct, ConstraintSet.BOTTOM);
+            constraintSet.connect(R.id.contentAct,ConstraintSet.BOTTOM,R.id.frameLayout_googleads,ConstraintSet.TOP,0);
+
+            constraintSet.clear(R.id.contentAct, ConstraintSet.RIGHT);
+            constraintSet.connect(R.id.contentAct,ConstraintSet.RIGHT,R.id.mainAct,ConstraintSet.LEFT,0);
+
+            constraintSet.setVerticalBias(R.id.contentAct, 0.0f);
+            constraintSet.setHorizontalBias(R.id.contentAct, 0.5f);
 
 
 
         }
         constraintSet.applyTo(constraintLayout);
+    }
+
+
+
+    private void InitLayout(int nOrientation) {
+        //InitLayoutForButton(nOrientation);
+        InitLayoutForAds(nOrientation);
+
     }
 
     OnInitializationCompleteListener onInitializationCompleteListener = new OnInitializationCompleteListener() {

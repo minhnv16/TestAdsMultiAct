@@ -19,6 +19,8 @@ android {
                 cppFlags '-std=c++11'
             }
         }
+        multiDexEnabled true
+
     }
 
     buildTypes {
