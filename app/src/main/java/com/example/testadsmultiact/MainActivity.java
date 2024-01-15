@@ -12,6 +12,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -83,6 +84,74 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
         int nOrientation = getResources().getConfiguration().orientation;
         InitLayout(nOrientation);
 
+    }
+    int convertPixelToDp(int px){
+        final float scale = getResources().getDisplayMetrics().density;
+        int dps = (int) (px / scale + 0.5f);
+        return dps;
+    }
+    int convertDpToPixel(int dps){
+        final float scale = getResources().getDisplayMetrics().density;
+        int pixels = (int) (dps * scale + 0.5f);
+        return pixels;
+    }
+    void AutoContentSize(){
+        Log.d("onClickListener","onClick");
+        int nOrientation = getResources().getConfiguration().orientation;
+
+        View rootView = findViewById(R.id.mainAct);
+        ViewGroup.LayoutParams layoutParamsRoot = rootView.getLayoutParams();
+        Log.d("onClickListener","layoutParamsRoot :"+
+                ", width="+String.valueOf(layoutParamsRoot.width)+
+                ", height="+String.valueOf(layoutParamsRoot.height)
+        );
+
+
+        View viewcontentAct = findViewById(R.id.contentAct);
+        ViewGroup.LayoutParams layoutParamsContent = viewcontentAct.getLayoutParams();
+
+        Log.d("onClickListener","layoutParamsContent :"+
+                ", width DP="+String.valueOf(convertPixelToDp(layoutParamsContent.width))+
+                ", height DP="+String.valueOf(convertPixelToDp(layoutParamsContent.height))
+        );
+
+
+        Log.d("onClickListener", "widthPixels="+String.valueOf(getResources().getDisplayMetrics().widthPixels));
+        Log.d("onClickListener", "heightPixels="+String.valueOf(getResources().getDisplayMetrics().heightPixels));
+
+        Log.d("onClickListener", "widthDps="+String.valueOf(convertPixelToDp(getResources().getDisplayMetrics().widthPixels)));
+        Log.d("onClickListener", "heightDps="+String.valueOf(convertPixelToDp(getResources().getDisplayMetrics().heightPixels)));
+
+
+        View viewcontentAds = findViewById(R.id.frameLayout_googleads);
+
+        ViewGroup.LayoutParams layoutParamsAds = viewcontentAds.getLayoutParams();
+        Log.d("onClickListener", "Ads width Px="+String.valueOf(layoutParamsAds.width));
+        Log.d("onClickListener", "Ads height Px="+String.valueOf(layoutParamsAds.height));
+
+        Log.d("onClickListener", "Ads widthDps="+String.valueOf(convertPixelToDp(layoutParamsAds.width)));
+        Log.d("onClickListener", "Ads heightDps="+String.valueOf(convertPixelToDp(layoutParamsAds.height)));
+
+        int nNewContentWidthPx = 0, nNewContentHeightPx = 0;
+
+
+
+        if(nOrientation== Configuration.ORIENTATION_LANDSCAPE) {
+            nNewContentWidthPx = getResources().getDisplayMetrics().widthPixels - layoutParamsAds.width;
+            nNewContentHeightPx = getResources().getDisplayMetrics().heightPixels- convertDpToPixel(48);
+        }
+        else{
+            nNewContentWidthPx = getResources().getDisplayMetrics().widthPixels;
+            nNewContentHeightPx = getResources().getDisplayMetrics().heightPixels - layoutParamsAds.height - convertDpToPixel(80);
+        }
+
+        Log.d("onClickListener", "Content width Px="+String.valueOf(nNewContentWidthPx));
+        Log.d("onClickListener", "Content height Px="+String.valueOf(nNewContentHeightPx));
+
+        layoutParamsContent.width =nNewContentWidthPx;
+        layoutParamsContent.height=nNewContentHeightPx;
+        viewcontentAct.setLayoutParams(layoutParamsContent);
+        viewcontentAct.requestLayout();
     }
 
     private void InitLayoutForAds(int nOrientation){
@@ -178,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
 
         }
         constraintSet.applyTo(constraintLayout);
+        AutoContentSize();
     }
 
 
