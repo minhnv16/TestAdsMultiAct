@@ -138,20 +138,20 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
 
         if(nOrientation== Configuration.ORIENTATION_LANDSCAPE) {
             nNewContentWidthPx = getResources().getDisplayMetrics().widthPixels - layoutParamsAds.width;
-            nNewContentHeightPx = getResources().getDisplayMetrics().heightPixels- convertDpToPixel(80);
+            //nNewContentHeightPx = getResources().getDisplayMetrics().heightPixels- convertDpToPixel(80);
         }
         else{
             nNewContentWidthPx = getResources().getDisplayMetrics().widthPixels;
-            nNewContentHeightPx = getResources().getDisplayMetrics().heightPixels - layoutParamsAds.height - convertDpToPixel(80);
+            //nNewContentHeightPx = getResources().getDisplayMetrics().heightPixels - layoutParamsAds.height - convertDpToPixel(80);
         }
 
         Log.d("onClickListener", "Content width Px="+String.valueOf(nNewContentWidthPx));
         Log.d("onClickListener", "Content height Px="+String.valueOf(nNewContentHeightPx));
 
         layoutParamsContent.width =nNewContentWidthPx;
-        layoutParamsContent.height=nNewContentHeightPx;
-        viewcontentAct.setLayoutParams(layoutParamsContent);
-        viewcontentAct.requestLayout();
+        //layoutParamsContent.height=nNewContentHeightPx;
+        //viewcontentAct.setLayoutParams(layoutParamsContent);
+        //viewcontentAct.requestLayout();
     }
 
     private void InitLayoutForAds(int nOrientation){
