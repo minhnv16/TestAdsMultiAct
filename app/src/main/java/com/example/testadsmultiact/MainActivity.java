@@ -48,19 +48,6 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
 
 
 
-    void GotoConnect(){
-        Intent myIntent = new Intent(MainActivity.this, MainActivity2.class);
-        myIntent.putExtra("key1", 123); //Optional parameters
-        MainActivity.this.startActivity(myIntent);
-    }
-    View.OnClickListener onBtnGotoConnectClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Log.d(TAG, "onClickListener.onClick");
-            GotoConnect();
-        }
-    };
-
 
 
     @Override
@@ -74,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
         TextView tv = binding.sampleText;
         tv.setText(stringFromJNI());
 
-        binding.button.setOnClickListener(onBtnGotoConnectClickListener);
         fr_layout_googleads = (FrameLayout ) findViewById(R.id.frameLayout_googleads);
 
         context = getApplicationContext();
@@ -84,74 +70,6 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
         int nOrientation = getResources().getConfiguration().orientation;
         InitLayout(nOrientation);
 
-    }
-    int convertPixelToDp(int px){
-        final float scale = getResources().getDisplayMetrics().density;
-        int dps = (int) (px / scale + 0.5f);
-        return dps;
-    }
-    int convertDpToPixel(int dps){
-        final float scale = getResources().getDisplayMetrics().density;
-        int pixels = (int) (dps * scale + 0.5f);
-        return pixels;
-    }
-    void AutoContentSize(){
-        Log.d("onClickListener","onClick");
-        int nOrientation = getResources().getConfiguration().orientation;
-
-        View rootView = findViewById(R.id.mainAct);
-        ViewGroup.LayoutParams layoutParamsRoot = rootView.getLayoutParams();
-        Log.d("onClickListener","layoutParamsRoot :"+
-                ", width="+String.valueOf(layoutParamsRoot.width)+
-                ", height="+String.valueOf(layoutParamsRoot.height)
-        );
-
-
-        View viewcontentAct = findViewById(R.id.contentAct);
-        ViewGroup.LayoutParams layoutParamsContent = viewcontentAct.getLayoutParams();
-
-        Log.d("onClickListener","layoutParamsContent :"+
-                ", width DP="+String.valueOf(convertPixelToDp(layoutParamsContent.width))+
-                ", height DP="+String.valueOf(convertPixelToDp(layoutParamsContent.height))
-        );
-
-
-        Log.d("onClickListener", "widthPixels="+String.valueOf(getResources().getDisplayMetrics().widthPixels));
-        Log.d("onClickListener", "heightPixels="+String.valueOf(getResources().getDisplayMetrics().heightPixels));
-
-        Log.d("onClickListener", "widthDps="+String.valueOf(convertPixelToDp(getResources().getDisplayMetrics().widthPixels)));
-        Log.d("onClickListener", "heightDps="+String.valueOf(convertPixelToDp(getResources().getDisplayMetrics().heightPixels)));
-
-
-        View viewcontentAds = findViewById(R.id.frameLayout_googleads);
-
-        ViewGroup.LayoutParams layoutParamsAds = viewcontentAds.getLayoutParams();
-        Log.d("onClickListener", "Ads width Px="+String.valueOf(layoutParamsAds.width));
-        Log.d("onClickListener", "Ads height Px="+String.valueOf(layoutParamsAds.height));
-
-        Log.d("onClickListener", "Ads widthDps="+String.valueOf(convertPixelToDp(layoutParamsAds.width)));
-        Log.d("onClickListener", "Ads heightDps="+String.valueOf(convertPixelToDp(layoutParamsAds.height)));
-
-        int nNewContentWidthPx = 0, nNewContentHeightPx = 0;
-
-
-
-        if(nOrientation== Configuration.ORIENTATION_LANDSCAPE) {
-            nNewContentWidthPx = getResources().getDisplayMetrics().widthPixels - layoutParamsAds.width;
-            nNewContentHeightPx = getResources().getDisplayMetrics().heightPixels- convertDpToPixel(80);
-        }
-        else{
-            nNewContentWidthPx = getResources().getDisplayMetrics().widthPixels;
-            nNewContentHeightPx = getResources().getDisplayMetrics().heightPixels - layoutParamsAds.height - convertDpToPixel(80);
-        }
-
-        Log.d("onClickListener", "Content width Px="+String.valueOf(nNewContentWidthPx));
-        Log.d("onClickListener", "Content height Px="+String.valueOf(nNewContentHeightPx));
-
-        layoutParamsContent.width =nNewContentWidthPx;
-        layoutParamsContent.height=nNewContentHeightPx;
-        viewcontentAct.setLayoutParams(layoutParamsContent);
-        viewcontentAct.requestLayout();
     }
 
     private void InitLayoutForAds(int nOrientation){
@@ -238,13 +156,30 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
             constraintSet.setHorizontalBias(nIdContent, 0.5f);
         }
         constraintSet.applyTo(constraintLayout);
-        AutoContentSize();
+
+
+        //begin adjust content width step
+        View viewcontentAds = findViewById(R.id.frameLayout_googleads);
+        View viewcontentAct = findViewById(R.id.contentAct);
+
+        ViewGroup.LayoutParams layoutParamsAds = viewcontentAds.getLayoutParams();
+        ViewGroup.LayoutParams layoutParamsContent = viewcontentAct.getLayoutParams();
+
+        int nNewContentWidthPx = 0;
+        if(nOrientation== Configuration.ORIENTATION_LANDSCAPE) {
+            nNewContentWidthPx = getResources().getDisplayMetrics().widthPixels - layoutParamsAds.width;
+        }
+        else{
+            nNewContentWidthPx = getResources().getDisplayMetrics().widthPixels;
+        }
+        layoutParamsContent.width = nNewContentWidthPx;
+        //begin adjust content width step
+
     }
 
 
 
     private void InitLayout(int nOrientation) {
-        //InitLayoutForButton(nOrientation);
         InitLayoutForAds(nOrientation);
 
     }
@@ -253,7 +188,6 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
         @Override
         public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
             Log.d(TAG, "onInitializationComplete: begin ");
-
         }
     };
     public void InitAds(){
@@ -272,9 +206,6 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
         //test ads
         String admob_app_banner = "ca-app-pub-3940256099942544/6300978111";
 
-
-//        //real ads
-//        String admob_app_banner = "ca-app-pub-2979798531795011/4426477935";
 
         Log.d(TAG, "initAdsAdmob, "+"admob_app_banner = "+ admob_app_banner);
         mAdmodBanner.setAdUnitId(admob_app_banner);
@@ -312,8 +243,6 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
 
     @Override
     protected void onResume() {
-        //setAdsByConnectionStatus(MainActivity.bShowingAds);
-
         hashMap.put(this.getClass().getSimpleName(), this);
         super.onResume();
     }
