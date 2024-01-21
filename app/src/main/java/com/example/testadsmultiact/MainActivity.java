@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
     AdView mAdmodBanner=null;
     public FrameLayout fr_layout_googleads;
 
-
+    int nClick = 0;
 
     void GotoConnect(){
         Intent myIntent = new Intent(MainActivity.this, MainActivity2.class);
@@ -57,11 +57,42 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
         @Override
         public void onClick(View view) {
             Log.d(TAG, "onClickListener.onClick");
-            GotoConnect();
+            nClick++;
+            //GotoConnect();
+            UpdateAdsStatus();
         }
     };
 
+    private void UpdateAdsStatus() {
+        boolean nShowAds = nClick %2 == 1;
+        int nOrientation = getResources().getConfiguration().orientation;
+        int nIdAds = R.id.frameLayout_googleads;
 
+        View viewcontentAct = findViewById(R.id.contentAct);
+        ViewGroup.LayoutParams layoutParamsContent = viewcontentAct.getLayoutParams();
+
+        View viewcontentAds = findViewById(nIdAds);
+        ViewGroup.LayoutParams layoutParamsAds = viewcontentAds.getLayoutParams();
+        if(nShowAds){
+            //hide ads
+            viewcontentAds.setVisibility(AdView.GONE);
+            layoutParamsContent.width = getResources().getDisplayMetrics().widthPixels;
+        }
+        else{
+            //show ads
+            viewcontentAds.setVisibility(AdView.VISIBLE);
+
+            int nNewContentWidthPx = 0;
+            if(nOrientation== Configuration.ORIENTATION_LANDSCAPE) {
+                nNewContentWidthPx = getResources().getDisplayMetrics().widthPixels - layoutParamsAds.width;
+            }
+            else{
+                nNewContentWidthPx = getResources().getDisplayMetrics().widthPixels;
+            }
+            layoutParamsContent.width =nNewContentWidthPx;
+
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements ActAdsEventHandle
     private void InitLayout(int nOrientation) {
         //InitLayoutForButton(nOrientation);
         InitLayoutForAds(nOrientation);
-
+        UpdateAdsStatus();
     }
 
     OnInitializationCompleteListener onInitializationCompleteListener = new OnInitializationCompleteListener() {
